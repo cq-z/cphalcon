@@ -79,7 +79,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Redis, __construct) {
 
 	zend_long ZEPHIR_LAST_CALL_STATUS;
 	zephir_fcall_cache_entry *_5 = NULL;
-	zval *frontend, *options = NULL, *_0$$4, *_1$$5, *_2$$6, *_3$$8, *_4$$9;
+	zval *frontend, *options = NULL, *_0$$4, *_1$$5, *_2$$6, *_3$$8, *_4$$9, *_6$$10;
 
 	ZEPHIR_MM_GROW();
 	zephir_fetch_params(1, 1, 1, &frontend, &options);
@@ -123,6 +123,11 @@ PHP_METHOD(Phalcon_Cache_Backend_Redis, __construct) {
 		ZVAL_STRING(_4$$9, "", 1);
 		zephir_array_update_string(&options, SL("auth"), &_4$$9, PH_COPY | PH_SEPARATE);
 	}
+	if (!(zephir_array_isset_string(options, SL("timeout")))) {
+		ZEPHIR_INIT_VAR(_6$$10);
+		ZVAL_LONG(_6$$10, 0, 1);
+		zephir_array_update_string(&options, SL("timeout"), &_6$$10, PH_COPY | PH_SEPARATE);
+	}
 	ZEPHIR_CALL_PARENT(NULL, phalcon_cache_backend_redis_ce, getThis(), "__construct", &_5, 124, frontend, options);
 	zephir_check_call_status();
 	ZEPHIR_MM_RESTORE();
@@ -134,8 +139,8 @@ PHP_METHOD(Phalcon_Cache_Backend_Redis, __construct) {
  */
 PHP_METHOD(Phalcon_Cache_Backend_Redis, _connect) {
 
-	zend_bool _0, _1, _4, _6;
-	zval *options = NULL, *redis = NULL, *persistent = NULL, *success = NULL, *host = NULL, *port = NULL, *auth = NULL, *index = NULL, *_5, *_2$$6, *_3$$6;
+	zend_bool _0, _1, _4, _6, _7;
+	zval *options = NULL, *redis = NULL, *persistent = NULL, *success = NULL, *host = NULL, *port = NULL, *auth = NULL, *index = NULL, *timeout= NULL, *_5, *_2$$6, *_3$$6;
 	zend_long ZEPHIR_LAST_CALL_STATUS;
 
 	ZEPHIR_MM_GROW();
@@ -159,15 +164,20 @@ PHP_METHOD(Phalcon_Cache_Backend_Redis, _connect) {
 		ZEPHIR_OBS_VAR(persistent);
 		_1 = !(zephir_array_isset_string_fetch(&persistent, options, SS("persistent"), 0 TSRMLS_CC));
 	}
-	if (_1) {
+	_7 = _1;
+	if (!(_7)) {
+		ZEPHIR_OBS_VAR(timeout);
+		_7 = !(zephir_array_isset_string_fetch(&timeout, &options, SL("timeout"), 0 TSRMLS_CC));
+	}
+	if (_7) {
 		ZEPHIR_THROW_EXCEPTION_DEBUG_STR(phalcon_cache_exception_ce, "Unexpected inconsistency in options", "phalcon/cache/backend/redis.zep", 118);
 		return;
 	}
 	if (zephir_is_true(persistent)) {
-		ZEPHIR_CALL_METHOD(&success, redis, "pconnect", NULL, 0, host, port);
+		ZEPHIR_CALL_METHOD(&success, redis, "pconnect", NULL, 0, host, port, timeout);
 		zephir_check_call_status();
 	} else {
-		ZEPHIR_CALL_METHOD(&success, redis, "connect", NULL, 0, host, port);
+		ZEPHIR_CALL_METHOD(&success, redis, "connect", NULL, 0, host, port, timeout);
 		zephir_check_call_status();
 	}
 	if (!(zephir_is_true(success))) {
