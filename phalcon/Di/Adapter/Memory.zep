@@ -29,7 +29,7 @@ class Memory implements AdapterInterface
      */
     public function has() -> bool
     {
-        if this->_default == null {
+        if !this->_default {
             return false;
         }
         return true;
