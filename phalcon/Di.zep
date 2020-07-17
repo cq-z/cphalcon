@@ -106,7 +106,7 @@ class Di implements DiInterface
      */
      public static function getAdapter() -> <AdapterInterface>
      {
-        if self::_default !== null {
+        if self::_default == null {
             let self::_default = new Memory();
         }
         return self::_default;
